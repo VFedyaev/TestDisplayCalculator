@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleTables;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace DisplayCalculator
         {
             double firstValue, secondValue;
 
+            Console.WriteLine();
             Console.WriteLine("Please input first value!");
             firstValue = Convert.ToDouble(Validator.InputValidator());
 
@@ -28,15 +30,18 @@ namespace DisplayCalculator
             try
             {
                 var values = InputValues();
-                double result;
+                double result = values.Item1 + values.Item2;
+                Console.WriteLine("Result is: " + result);
+                Console.WriteLine("---------------------------------------");
 
-                result = values.Item1 + values.Item2;
-
-                Console.WriteLine("Result = " + result);
+                var table = new ConsoleTable(values.Item1.ToString());
+                table.AddRow(values.Item2)
+                     .AddRow(result);
+                table.Write(Format.AlternativeAddition);
             }
             catch (FormatException)
             {
-                Console.WriteLine("You have not input value. Next time please input value if programm ask you!!!");
+                Console.WriteLine("You have not input value. Next time please input value if program ask you!!!");
             }
             catch (Exception ex)
             {
@@ -50,15 +55,18 @@ namespace DisplayCalculator
             try
             {
                 var values = InputValues();
-                double result;
+                double result = values.Item1 - values.Item2;
+                Console.WriteLine("Result is: " + result);
+                Console.WriteLine("---------------------------------------");
 
-                result = values.Item1 - values.Item2;
-
-                Console.WriteLine("Result = " + result);
+                var table = new ConsoleTable(values.Item1.ToString());
+                table.AddRow(values.Item2)
+                     .AddRow(result);
+                table.Write(Format.AlternativeSubstraction);
             }
             catch (FormatException)
             {
-                Console.WriteLine("You have not input value. Next time please input value if programm ask you!!!");
+                Console.WriteLine("You have not input value. Next time please input value if program ask you!!!");
             }
             catch (Exception ex)
             {
@@ -72,15 +80,18 @@ namespace DisplayCalculator
             try
             {
                 var values = InputValues();
-                double result;
+                double result = values.Item1 * values.Item2;
+                Console.WriteLine("Result is: " + result);
+                Console.WriteLine("---------------------------------------");
 
-                result = values.Item1 * values.Item2;
-
-                Console.WriteLine("Result = " + result);
+                var table = new ConsoleTable(values.Item1.ToString());
+                table.AddRow(values.Item2)
+                     .AddRow(result);
+                table.Write(Format.AlternativeMultiplication);
             }
             catch (FormatException)
             {
-                Console.WriteLine("You have not input value. Next time please input value if programm ask you!!!");
+                Console.WriteLine("You have not input value. Next time please input value if program ask you!!!");
             }
             catch (Exception ex)
             {
@@ -101,12 +112,18 @@ namespace DisplayCalculator
                 else
                 {
                     result = values.Item1 / values.Item2;
-                    Console.WriteLine("Result = " + result);
-                }          
+                    Console.WriteLine("Result is: " + result);
+                    Console.WriteLine("---------------------------------------");
+
+                    var table = new ConsoleTable(values.Item1.ToString());
+                    table.AddRow(values.Item2)
+                         .AddRow(result);
+                    table.Write(Format.AlternativeDivision);
+                }
             }
             catch (FormatException)
             {
-                Console.WriteLine("You have not input value. Next time please input value if programm ask you!!!");
+                Console.WriteLine("You have not input value. Next time please input value if program ask you!!!");
             }
             catch (Exception ex)
             {
