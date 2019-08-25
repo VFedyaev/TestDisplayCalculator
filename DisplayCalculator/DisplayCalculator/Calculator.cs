@@ -1,9 +1,5 @@
 ﻿using ConsoleTables;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DisplayCalculator
 {
@@ -125,7 +121,7 @@ namespace DisplayCalculator
         {
             try
             {
-                string continueId;
+                string showId;
                 var values = InputValues();
                 double result;
 
@@ -143,12 +139,12 @@ namespace DisplayCalculator
                     table.Write(Format.AlternativeDivision);
 
                     Console.WriteLine("Show the Division step by step? Y/N");
-                    continueId = Console.ReadLine();
-                    if (continueId.ToUpper() == "Y")
+                    showId = Console.ReadLine();
+                    if (showId.ToUpper() == "Y")
                     {
                         Console.WriteLine();
                         DivisionByStep(values);
-                    }                      
+                    }
                 }
             }
             catch (FormatException)
@@ -161,7 +157,7 @@ namespace DisplayCalculator
             }
         }
 
-        public static void DivisionByStep(Tuple<double,double> userValues)
+        public static void DivisionByStep(Tuple<double, double> userValues)
         {
             //P.S. Oh, I'm really sorry, for this code. Your poor eyes, yes i know what do u feel now. One more time sorry. But at this moment i can't come up with nothing better. Because i do it by my self and i have't a person to ask him mb better way. 
             try
@@ -187,7 +183,7 @@ namespace DisplayCalculator
 
                         do
                         {
-                            valueOfCurrentIteration = Convert.ToInt32(compSecondValue * i);
+                            valueOfCurrentIteration = compSecondValue * i;
 
                             if (valueOfCurrentIteration >= compFirstValue)
                                 break;
@@ -202,7 +198,7 @@ namespace DisplayCalculator
                         Console.WriteLine(compSecondValue + " * " + --i + " = " + valueOfPrevIteration);
                         Console.WriteLine(compFirstValue + " - " + valueOfPrevIteration + " = " + (compFirstValue - valueOfPrevIteration));
 
-                        compFirstValue = compFirstValue - valueOfPrevIteration;
+                        compFirstValue -= valueOfPrevIteration;
                         answer += i;
 
                         while (compFirstValue < compSecondValue)
