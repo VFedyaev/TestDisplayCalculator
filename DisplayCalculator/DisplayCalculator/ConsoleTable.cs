@@ -54,7 +54,7 @@ namespace ConsoleTables
                 throw new Exception(
                     $"The number columns in the row ({Columns.Count}) does not match the values ({values.Length}");
 
-             Rows.Add(values);
+            Rows.Add(values);
             return this;
         }
 
@@ -284,7 +284,7 @@ namespace ConsoleTables
             return Options.NumberAlignment == Alignment.Right
                     && ColumnTypes != null
                     && NumericTypes.Contains(ColumnTypes[i])
-                ? "-" 
+                ? "-"
                 : "";
         }
 

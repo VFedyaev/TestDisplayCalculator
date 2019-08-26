@@ -1,9 +1,6 @@
 ﻿using ConsoleTables;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DisplayCalculator
 {
@@ -34,6 +31,7 @@ namespace DisplayCalculator
                 Console.WriteLine("Result is: " + result);
                 Console.WriteLine("---------------------------------------");
 
+                //Check length of values. Rule of Addition in the column. On the top must be longest value.
                 if (values.Item1.ToString().Length >= values.Item2.ToString().Length)
                 {
                     var table = new ConsoleTable(values.Item1.ToString());
@@ -95,6 +93,7 @@ namespace DisplayCalculator
                 Console.WriteLine("Result is: " + result);
                 Console.WriteLine("---------------------------------------");
 
+                //Check length of values. Rule of Multiplication in the column. On the top must be longest value.
                 if (values.Item1.ToString().Length >= values.Item2.ToString().Length)
                 {
                     var table = new ConsoleTable(values.Item1.ToString());
@@ -125,10 +124,11 @@ namespace DisplayCalculator
         {
             try
             {
-                string continueId;
+                string showId;
                 var values = InputValues();
                 double result;
 
+                //Check division by zero
                 if (values.Item2 == 0)
                     Console.WriteLine("You try to divide by zero. It's the biggest wrong in your life. :))");
                 else
@@ -143,12 +143,20 @@ namespace DisplayCalculator
                     table.Write(Format.AlternativeDivision);
 
                     Console.WriteLine("Show the Division step by step? Y/N");
-                    continueId = Console.ReadLine();
-                    if (continueId.ToUpper() == "Y")
+                    showId = Console.ReadLine();
+                    if (showId.ToUpper() == "Y")
                     {
                         Console.WriteLine();
                         DivisionByStep(values);
-                    }                      
+
+                        Console.WriteLine("Show the Division in column? Y/N");
+                        showId = Console.ReadLine();
+                        if (showId.ToUpper() == "Y")
+                        {
+                            Console.Clear();
+                            DivisionInColumn(values);
+                        }
+                    }
                 }
             }
             catch (FormatException)
@@ -161,68 +169,167 @@ namespace DisplayCalculator
             }
         }
 
-        public static void DivisionByStep(Tuple<double,double> userValues)
+        //Пошаговый вывод деления
+        public static void DivisionByStep(Tuple<double, double> userValues)
         {
-            //P.S. Oh, I'm really sorry, for this code. Your poor eyes, yes i know what do u feel now. One more time sorry. But at this moment i can't come up with nothing better. Because i do it by my self and i have't a person to ask him mb better way. 
             try
             {
+                //Do multiplication on 100 user values.
                 int compFirstValue = Convert.ToInt32(userValues.Item1 * 100), compSecondValue = Convert.ToInt32(userValues.Item2 * 100);
                 string answer = "";
 
                 Console.Write(userValues.Item1 + " / " + userValues.Item2 + " = " + compFirstValue + " / " + compSecondValue);
                 Console.WriteLine();
-
+                //Check if values is integer
                 if (Int32.TryParse(userValues.Item1.ToString(), out int number1) && Int32.TryParse(userValues.Item2.ToString(), out int number2))
                 {
                     Console.WriteLine();
                     Console.WriteLine("Answer is: = " + (Convert.ToDouble(Convert.ToDouble(number1) / Convert.ToDouble(number2))));
-                    Console.ReadKey();
                 }
                 else
                 {
-                    for (int j = 0; j < 7; j++)
+                    for (int j = 0; j < 5; j++)
                     {
-                        int i = 1;
+                        int counter = 1;
                         int valueOfCurrentIteration = 0, valueOfPrevIteration = 0;
 
+                        //Looking for the closest to divisible. The closest will be write into variable of name valueOfPrevIteration
                         do
                         {
-                            valueOfCurrentIteration = Convert.ToInt32(compSecondValue * i);
+                            valueOfCurrentIteration = compSecondValue * counter;
 
                             if (valueOfCurrentIteration >= compFirstValue)
                                 break;
                             else
                             {
                                 valueOfPrevIteration = valueOfCurrentIteration;
-                                i++;
+                                counter++;
                             }
-                        } while (compFirstValue >= valueOfCurrentIteration);
+                        } while (compFirstValue > valueOfCurrentIteration);
 
                         Console.WriteLine();
-                        Console.WriteLine(compSecondValue + " * " + --i + " = " + valueOfPrevIteration);
+                        Console.WriteLine(compSecondValue + " * " + --counter + " = " + valueOfPrevIteration);
                         Console.WriteLine(compFirstValue + " - " + valueOfPrevIteration + " = " + (compFirstValue - valueOfPrevIteration));
 
-                        compFirstValue = compFirstValue - valueOfPrevIteration;
-                        answer += i;
+                        compFirstValue -= valueOfPrevIteration;
+                        answer += counter;
 
+                        //Doing multipling and put comma if firstValue less than Divider
                         while (compFirstValue < compSecondValue)
                         {
                             compFirstValue *= 10;
                             answer += ",";
                         };
-                        j++;
                     }
 
                     Console.WriteLine();
-
+                    //Creating the correct answer display: Exaple 22.67 / 4.5 = 5,,3,7,7,7,
+                    //22.67 / 4.5 = 5,03,7,7,7,
                     answer = answer.Replace(",,", ",0");
+                    //Substring = 5,
                     string stringBeforeChar = answer.Substring(0, answer.IndexOf(",") + 1);
+                    //Substring = 03,7,7,7, Replace = 03777
                     string stringAfterChar = answer.Substring(answer.IndexOf(",") + 1).Replace(",", "");
+                    //22.67 / 4.5 = 5,03777,
                     answer = stringBeforeChar + stringAfterChar;
 
                     Console.WriteLine("Answer is: = " + answer);
                     Console.WriteLine();
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        //Отображение деления в столбик
+        public static void DivisionInColumn(Tuple<double, double> userValues)
+        {
+            //P.S. Oh, I'm really sorry, for this code. Your poor eyes, yes i know what do u feel now. One more time sorry me. But at this moment i can't come up with nothing better. Because i do it by my self and i have't a person to ask him mb better way. 
+            try
+            {
+                //Do multiplication on 100 user values.
+                int compFirstValue = Convert.ToInt32(userValues.Item1 * 100), compSecondValue = Convert.ToInt32(userValues.Item2 * 100);
+                string answer = "";
+
+                List<int> divisible = new List<int>();
+                List<int> subtrahend = new List<int>();
+                List<int> resFirstValueMinusPrevIter = new List<int>();
+
+                //Check if values is integer
+                if (Int32.TryParse(userValues.Item1.ToString(), out int number1) && Int32.TryParse(userValues.Item2.ToString(), out int number2))
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("  " + Convert.ToDouble(number1) + "|" + Convert.ToDouble(number2));
+                    Console.WriteLine("-   |----------");
+                    Console.WriteLine("  " + (Convert.ToDouble(Convert.ToDouble(number2) * Convert.ToDouble(number2))) + "|" + (Convert.ToDouble(Convert.ToDouble(number1) / Convert.ToDouble(number2))));
+                    Console.WriteLine(" ----");
+                    Console.WriteLine("   " + (Convert.ToDouble(Convert.ToDouble(number1) - (Convert.ToDouble(Convert.ToDouble(number2) * Convert.ToDouble(number2))))));
+                }
+                else
+                {
+                    //Looking for the closest to divisible. The closest will be write into variable of name valueOfPrevIteration
+                    for (int j = 0; j < 3; j++)
+                    {
+                        int counter = 1;
+                        int valueOfCurrentIteration = 0, valueOfPrevIteration = 0;
+
+                        do
+                        {
+                            valueOfCurrentIteration = compSecondValue * counter;
+
+                            if (valueOfCurrentIteration >= compFirstValue)
+                                break;
+                            else
+                            {
+                                valueOfPrevIteration = valueOfCurrentIteration;
+                                counter++;
+                            }
+                        } while (compFirstValue > valueOfCurrentIteration);
+                        --counter;
+
+                        divisible.Add(compFirstValue);
+                        subtrahend.Add(valueOfPrevIteration);
+
+                        compFirstValue -= valueOfPrevIteration;
+                        resFirstValueMinusPrevIter.Add(compFirstValue);
+
+                        answer += counter;
+
+                        //Doing multipling and put comma if firstValue less than Divider
+                        while (compFirstValue < compSecondValue)
+                        {
+                            compFirstValue *= 10;
+                            answer += ",";
+                        };
+                    }
+
+                    //Creating the correct answer display: Exaple 22.67 / 4.5 = 5,,3,7,7,7,
+                    //22.67 / 4.5 = 5,03,7,7,7,
+                    answer = answer.Replace(",,", ",0");
+                    //Substring = 5,
+                    string stringBeforeChar = answer.Substring(0, answer.IndexOf(",") + 1);
+                    //Substring = 03,7,7,7, Replace = 03777
+                    string stringAfterChar = answer.Substring(answer.IndexOf(",") + 1).Replace(",", "");
+                    //22.67 / 4.5 = 5,03777,
+                    answer = stringBeforeChar + stringAfterChar;
+
+                    Console.WriteLine("  " + divisible[0] + "|" + compSecondValue);
+                    Console.WriteLine("-     |-------");
+                    Console.WriteLine("  " + subtrahend[0] + "|" + answer);
+                    Console.WriteLine("  ----");
+                    Console.WriteLine("    " + divisible[1]);
+                    Console.WriteLine("-");
+                    Console.WriteLine("    " + subtrahend[1]);
+                    Console.WriteLine("    ----");
+                    Console.WriteLine("     " + divisible[2]);
+                    Console.WriteLine("-");
+                    Console.WriteLine("     " + subtrahend[2]);
+                    Console.WriteLine("     ----");
+                    Console.WriteLine("      " + resFirstValueMinusPrevIter[2]);
+                }
+                Console.WriteLine();
             }
             catch (Exception ex)
             {
